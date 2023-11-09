@@ -1,13 +1,11 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "name": "my-app",
+  "version": "0.1.0",
+  "dependencies": {
+    "express": "4",
+    "socket.io": "^4.6.1"
+  },
   "scripts": {
     "serve": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "socket.io": "^4.7.2"
   }
 }
