@@ -14,10 +14,10 @@ const Form = () => {
   const dispatch = useDispatch();
 
   const sendMessageWithFiles = (
-    fileInput: any,
+    fileInput: HTMLInputElement,
     setFilePath: React.Dispatch<React.SetStateAction<string | null>>
   ) => {
-    const file = fileInput.files[0];
+    const file = (fileInput.files as FileList)[0];
     toBase64(file).then((url) => {
       const fileData = {
         src: url,
@@ -29,18 +29,19 @@ const Form = () => {
     setFilePath(null);
   };
 
-  const sendMessageWithoutFiles = (e: any) => {
+  const sendMessageWithoutFiles = (input: HTMLInputElement) => {
     const message = messageConstructor({ inputValue }, state);
     dispatch(sendMessage(message));
-    e.target[1].value = "";
+    input.value = "";
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const text = e.target[0].value;
-    const fileInput = e.target[1];
-    if (text.length >= 1 && fileInput.value.length < 1) {
-      sendMessageWithoutFiles(e);
+    const form = e.target as HTMLFormElement;
+    const fileInput = form[1] as HTMLInputElement;
+
+    if (inputValue.length >= 1 && fileInput.value.length < 1) {
+      sendMessageWithoutFiles(fileInput);
     } else if (fileInput.value.length > 1) {
       sendMessageWithFiles(fileInput, setFilePath);
     }
