@@ -5,19 +5,7 @@ import { useState } from "react";
 import ReplyPanel from "../ReplyPanel";
 import toBase64 from "../../features/toBase64";
 import "./Form.css";
-import { addFileToStorage } from "../../features/addFileToStorage";
-const uniqid = require("uniqid");
-
-const messageConstructor = (data: any, state: RootState) => {
-  const id = uniqid();
-  return {
-    message: data.inputValue,
-    user: state.chat.myName,
-    reply: state.chat.reply ?? null,
-    file: data.fileData ? { ...data.fileData, id: id } : null,
-    id: id,
-  };
-};
+import { messageConstructor } from "../../features/messageConstructor";
 
 const Form = () => {
   const [inputValue, setValue] = useState("");
@@ -35,16 +23,7 @@ const Form = () => {
         src: url,
         type: file.type,
       };
-
       const message = messageConstructor({ inputValue, fileData }, state);
-
-      if (message.file) {
-        const file = { ...message.file };
-        addFileToStorage(file).then((res) => {
-          dispatch(sendMessage(message));
-        });
-        return;
-      }
       dispatch(sendMessage(message));
     });
     setFilePath(null);

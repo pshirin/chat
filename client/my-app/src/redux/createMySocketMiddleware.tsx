@@ -18,11 +18,6 @@ export const createMySocketMiddleware = ({
       dispatch(getUsers(names));
     });
     socket.on("GET_MESSAGE", async (message) => {
-      if (message.file) {
-        const file = { ...message.file };
-        await addFileToStorage(file);
-        delete message.file.src;
-      }
       dispatch(getMessage(message));
     });
 
