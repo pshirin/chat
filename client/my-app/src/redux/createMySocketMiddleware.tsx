@@ -1,15 +1,10 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
 import { ChatActions } from "./store";
-import { addFileToStorage } from "../features/addFileToStorage";
 
 export const createMySocketMiddleware = ({
   getMessage,
   getUsers,
-  joinChat,
-  replyMessage,
-  sendMessage,
-  updateMessages,
 }: ChatActions): Middleware => {
   return ({ getState, dispatch }) => {
     const url = "http://localhost:8888";

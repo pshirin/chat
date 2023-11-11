@@ -1,12 +1,20 @@
+export type File = {
+  file: {
+    src: string;
+    type: string;
+  };
+  id: string;
+};
+
+
 export type Message = {
   user: string | null;
   message: string;
   id: string;
-  file: {
-    type: string;
-    src: string;
-  };
+  file: File['file']
 };
+
+export type MessageWithoutFile  = Omit<Message,'file'>
 
 export interface ChatState {
   messages: Awaited<Promise<Array<Message>>>;
@@ -20,18 +28,3 @@ export interface ChatState {
   conn: any;
   peerId: null | string;
 }
-
-export type File = {
-  file: {
-    src: string;
-    type: string;
-  };
-  id: string;
-};
-
-export type MessageWithoutFile = {
-  user: string;
-  message: string;
-  id: string;
-  reply: Message | null;
-};

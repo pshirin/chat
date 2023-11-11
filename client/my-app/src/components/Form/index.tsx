@@ -9,13 +9,13 @@ import { messageConstructor } from "../../features/messageConstructor";
 
 const Form = () => {
   const [inputValue, setValue] = useState("");
-  const [filePath, setFilePath] = useState(null);
+  const [filePath, setFilePath] = useState<string | null>(null);
   const state = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
   const sendMessageWithFiles = (
     fileInput: any,
-    setFilePath: React.SetStateAction<any>
+    setFilePath: React.Dispatch<React.SetStateAction<string | null>>
   ) => {
     const file = fileInput.files[0];
     toBase64(file).then((url) => {
@@ -49,9 +49,11 @@ const Form = () => {
     fileInput.value = "";
   };
 
-  const handleFilePick = (e: any) => {
-    const filePath = e.target.files[0].name;
-    setFilePath(filePath);
+  const handleFilePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filePath = (e.target as HTMLInputElement).files?.[0].name;
+    if (filePath) {
+      setFilePath(filePath);
+    }
   };
 
   return (

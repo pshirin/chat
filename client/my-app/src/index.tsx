@@ -5,8 +5,6 @@ import App from "./components/App";
 import "./index.css";
 const container = document.getElementById("root")!;
 const root = createRoot(container);
-//  "proxy": "http://192.168.2.225:8888" my
-//  "proxy": "http://192.168.2.159:8000"
 
 root.render(
   <Provider store={store}>
