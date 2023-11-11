@@ -1,6 +1,6 @@
 import React from "react";
 import "./MessageControlPanel.css";
-import { replyMessage } from "../../redux/store";
+import { replyMessage } from "../../redux/actions";
 import { useDispatch } from "react-redux";
 
 const MessageControlPanel = ({ message }: any) => {

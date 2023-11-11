@@ -5,42 +5,19 @@ import {
   Action,
 } from "@reduxjs/toolkit";
 import { createMySocketMiddleware } from "./createMySocketMiddleware";
+import { ChatState } from "../types";
 
-export type TMessage = {
-  user: string | null;
-  message: string;
-  id: string;
-  file: {
-    type: string;
-    src: string;
-  };
-};
-export interface Chat {
-  messages: Awaited<Promise<Array<TMessage>>>;
-  update: boolean;
-  events: {
-    isConnect: boolean;
-  };
-  users: Awaited<Promise<Array<string>>>;
-  myName: string | null;
-  thread: any;
-  reply: null | TMessage;
-  conn: any
-  peerId: null | string;
-}
-
-const initialState: Chat = {
+const initialState: ChatState = {
   update: false,
   messages: [],
   reply: null,
   events: {
     isConnect: false,
   },
-  thread: [],
   users: [],
   myName: null,
   peerId: null,
-  conn: null
+  conn: null,
 };
 
 export const chatSlice = createSlice({
@@ -48,49 +25,32 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     joinChat(state, action) {
-      state.myName = action.payload
+      state.myName = action.payload;
     },
     getUsers(state, action) {
-      state.users = action.payload
+      state.users = action.payload;
     },
     updateMessages(state, action) {
-      state.messages = action.payload
+      state.messages = action.payload;
     },
     getMessage(state, action) {
-      state.messages = [...state.messages, action.payload]
+      state.messages = [...state.messages, action.payload];
     },
-    sendMessage(state, action): any { },
+    sendMessage(state, action): any {},
     replyMessage(state, action) {
       state.reply = action.payload;
     },
   },
 });
 
-
-const chatReducer = chatSlice.reducer;
-
-
-
-
-
-
-export const {
-  sendMessage,
-  updateMessages,
-  joinChat,
-  replyMessage,
-  getUsers,
-} = chatSlice.actions;
-
-
 export const store = configureStore({
   reducer: {
-    chat: chatReducer,
+    chat: chatSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(createMySocketMiddleware()),
+    getDefaultMiddleware().concat(createMySocketMiddleware(chatSlice.actions)),
 });
-
+export type ChatActions = typeof chatSlice.actions;
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<

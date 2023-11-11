@@ -1,30 +1,8 @@
-import localforage from "localforage";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import React, { useState, useEffect } from "react";
 import Messages from "../Messages";
-
-async function mergeMessagesWithIDB(messages: any) {
-  const mergedMessages = await localforage
-    .getItem("files")
-    .then((filesIDB: any) => {
-      if (filesIDB) {
-        return messages.map((message: any) => {
-          const index = filesIDB.findIndex(
-            (file: any) => file.id === message.id
-          );
-          if (index) {
-            return { ...message, file: filesIDB[index] };
-          }
-        });
-      }
-      return messages;
-    })
-    .then((merged) => {
-      return merged;
-    });
-  return mergedMessages;
-}
+import { mergeMessagesWithIDB } from "../../features/mergeMessagesWithIDB";
 
 const MessagesContainer = () => {
   const messages = useSelector((state: RootState) => state.chat.messages);
@@ -43,6 +21,7 @@ const MessagesContainer = () => {
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messagesWithFiles]);
-  return <Messages messages={messagesWithFiles} myName={myName} />;
+
+  return <Messages messagesWithFiles={messagesWithFiles} myName={myName} />;
 };
 export default MessagesContainer;

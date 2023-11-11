@@ -1,33 +1,8 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
-import localforage from "localforage";
-import { RootState, TMessage } from "./store";
+import { ChatActions, RootState } from "./store";
+import { addFileToStorage } from "../features/addFileToStorage";
 const uniqid = require("uniqid");
-
-export type TFile = {
-  file: {
-    src: string;
-    type: string;
-  };
-  id: string;
-};
-export type TMessageWithoutFiles = {
-  user: string;
-  message: string;
-  id: string;
-  reply: TMessage | null;
-};
-
-const addToStorage = async (file: any) => {
-  await localforage.getItem("files").then(async (files: any) => {
-    const store = files ? [...files, file] : [file];
-    await localforage.setItem("files", store);
-  });
-};
-
-const createStorage = async (messages: any) => {
-  await localforage.setItem("files", messages);
-};
 
 const messageConstructor = (data: any, getState: () => RootState) => {
   const id = uniqid();
@@ -40,43 +15,27 @@ const messageConstructor = (data: any, getState: () => RootState) => {
   };
 };
 
-export const createMySocketMiddleware = (): Middleware => {
+export const createMySocketMiddleware = ({
+  getMessage,
+  getUsers,
+  joinChat,
+  replyMessage,
+  sendMessage,
+  updateMessages,
+}: ChatActions): Middleware => {
   return ({ getState, dispatch }) => {
     const url = "http://localhost:8888";
     let socket = io(url);
     socket.on("GET_USERS", (names) => {
-      dispatch({
-        type: "chat/getUsers",
-        payload: names,
-      });
+      dispatch(getUsers(names));
     });
-    socket.on("GET_MESSAGES", async (message) => {
+    socket.on("GET_MESSAGE", async (message) => {
       if (message.file) {
         const file = { ...message.file };
-        await addToStorage(file);
+        await addFileToStorage(file);
         delete message.file.src;
       }
-      dispatch({
-        type: "chat/getMessage",
-        payload: message,
-      });
-    });
-    socket.on("REQUEST_MESSAGES", async (messages) => {
-      const files = [];
-      for (let i = 0; i <= messages.length - 1; i++) {
-        if (messages[i].file) {
-          const file = { ...messages[i].file, id: messages[i].id };
-          files.push(file);
-          delete messages[i].file.src;
-        }
-      }
-      if (files.length) {
-        await createStorage(files);
-      }
-      dispatch({
-        type: "chat/updateMessages",
-        payload: messages,
-      });
+      dispatch(getMessage(message));
     });
 
     return (next) => (action) => {

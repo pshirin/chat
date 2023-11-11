@@ -25,7 +25,6 @@ io.on("connection", (socket) => {
     });
     const userNames = users.map((user) => user.name);
     io.emit("GET_USERS", userNames);
-    io.emit("REQUEST_MESSAGES", messages);
   });
 
   socket.on("SEND_MESSAGE", (data) => {
@@ -37,19 +36,7 @@ io.on("connection", (socket) => {
       id: data.id,
     };
     messages.push(message);
-    io.emit("GET_MESSAGES", message);
-  });
-
-  socket.on("SEND_THREAD", (clientMessage) => {
-    const index = messages.findIndex((message) => {
-      return message.id == clientMessage.id;
-    });
-    messages[index] = clientMessage;
-    io.emit("GET_THREAD", clientMessage);
-  });
-
-  socket.on("REQUEST_MESSAGES", () => {
-    io.emit("GET_MESSAGES", messages);
+    io.emit("GET_MESSAGE", message);
   });
 
   socket.on("disconnect", () => {

@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import getTypeFile from "../../features/getTypeFile";
 import "./ReplyPanel.css";
-import { replyMessage, RootState } from "../../redux/store";
+import { RootState } from "../../redux/store";
+import { replyMessage } from "../../redux/actions";
 
 const ReplyPanel = () => {
   const messegeData = useSelector((state: RootState) => state.chat.reply);

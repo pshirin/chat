@@ -1,8 +1,8 @@
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-import "./index.css";
 import App from "./components/App";
+import "./index.css";
 const container = document.getElementById("root")!;
 const root = createRoot(container);
 //  "proxy": "http://192.168.2.225:8888" my
