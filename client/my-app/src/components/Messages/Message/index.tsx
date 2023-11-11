@@ -9,9 +9,9 @@ const Message = ({ data }: any) => {
 
   const renderFile = file
     ? getTypeFile(type, src, {
-      width: window.innerWidth / 4,
-      height: window.innerHeight / 3,
-    })
+        width: window.innerWidth / 4,
+        height: window.innerHeight / 3,
+      })
     : null;
 
   return (
@@ -26,6 +26,5 @@ const Message = ({ data }: any) => {
     </>
   );
 };
-
 
 export default Message;

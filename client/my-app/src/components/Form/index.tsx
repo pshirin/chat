@@ -1,23 +1,29 @@
 import { RootState } from "../../redux/store";
-import { joinChat, sendMessage, replyMessage } from "../../redux/actions";
-
+import { sendMessage, replyMessage } from "../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { useState, useEffect } from "react";
-import nameGenerator from "../../features/nameGenerator";
+import { useState } from "react";
 import ReplyPanel from "../ReplyPanel";
 import toBase64 from "../../features/toBase64";
 import "./Form.css";
+import { addFileToStorage } from "../../features/addFileToStorage";
+const uniqid = require("uniqid");
+
+const messageConstructor = (data: any, state: RootState) => {
+  const id = uniqid();
+  return {
+    message: data.inputValue,
+    user: state.chat.myName,
+    reply: state.chat.reply ?? null,
+    file: data.fileData ? { ...data.fileData, id: id } : null,
+    id: id,
+  };
+};
 
 const Form = () => {
   const [inputValue, setValue] = useState("");
   const [filePath, setFilePath] = useState(null);
-  const reply = useSelector((state: RootState) => state.chat.reply);
+  const state = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const randomName = nameGenerator();
-    dispatch(joinChat(randomName));
-  }, []);
 
   const sendMessageWithFiles = (
     fileInput: any,
@@ -29,13 +35,24 @@ const Form = () => {
         src: url,
         type: file.type,
       };
-      dispatch(sendMessage({ inputValue, fileData, reply }));
+
+      const message = messageConstructor({ inputValue, fileData }, state);
+
+      if (message.file) {
+        const file = { ...message.file };
+        addFileToStorage(file).then((res) => {
+          dispatch(sendMessage(message));
+        });
+        return;
+      }
+      dispatch(sendMessage(message));
     });
     setFilePath(null);
   };
 
   const sendMessageWithoutFiles = (e: any) => {
-    dispatch(sendMessage({ inputValue }));
+    const message = messageConstructor({ inputValue }, state);
+    dispatch(sendMessage(message));
     e.target[1].value = "";
   };
 

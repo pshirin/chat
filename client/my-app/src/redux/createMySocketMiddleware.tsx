@@ -1,19 +1,7 @@
 import { Middleware } from "@reduxjs/toolkit";
 import { io } from "socket.io-client";
-import { ChatActions, RootState } from "./store";
+import { ChatActions } from "./store";
 import { addFileToStorage } from "../features/addFileToStorage";
-const uniqid = require("uniqid");
-
-const messageConstructor = (data: any, getState: () => RootState) => {
-  const id = uniqid();
-  return {
-    message: data.inputValue,
-    user: getState().chat.myName,
-    reply: getState().chat.reply ?? null,
-    file: data.fileData ? { ...data.fileData, id: id } : null,
-    id: id,
-  };
-};
 
 export const createMySocketMiddleware = ({
   getMessage,
@@ -44,8 +32,7 @@ export const createMySocketMiddleware = ({
           socket.emit("JOIN_CHAT", { name: action.payload });
         }
         if (action.type === "chat/sendMessage") {
-          const message = messageConstructor(action.payload, getState);
-          socket.emit("SEND_MESSAGE", message);
+          socket.emit("SEND_MESSAGE", action.payload);
         }
       }
       next(action);

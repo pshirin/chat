@@ -5,14 +5,14 @@ import { RootState } from "../../redux/store";
 import { replyMessage } from "../../redux/actions";
 
 const ReplyPanel = () => {
-  const messegeData = useSelector((state: RootState) => state.chat.reply);
+  const messageData = useSelector((state: RootState) => state.chat.reply);
   const dispatch = useDispatch();
   const closeHandler = () => {
     dispatch(replyMessage(null));
   };
 
-  if (messegeData) {
-    const { user, message, file } = messegeData;
+  if (messageData) {
+    const { user, message, file } = messageData;
     return (
       <div className="reply">
         <div>

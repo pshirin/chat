@@ -43,6 +43,7 @@ const MessagesContainer = () => {
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messagesWithFiles]);
+
   return <Messages messages={messagesWithFiles} myName={myName} />;
 };
 export default MessagesContainer;

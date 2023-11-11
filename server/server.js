@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
       id: data.id,
     };
     messages.push(message);
-    io.emit("GET_MESSAGE", message);
+    socket.broadcast.emit("GET_MESSAGE", message);
   });
 
   socket.on("disconnect", () => {

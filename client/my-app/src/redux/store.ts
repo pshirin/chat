@@ -36,7 +36,9 @@ export const chatSlice = createSlice({
     getMessage(state, action) {
       state.messages = [...state.messages, action.payload];
     },
-    sendMessage(state, action): any {},
+    sendMessage(state, action) {
+      state.messages = [...state.messages, action.payload];
+    },
     replyMessage(state, action) {
       state.reply = action.payload;
     },
